@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.http.connector
+package uk.gov.hmrc.play.http
 
 import play.api.mvc.{Headers, RequestHeader}
 import play.api.test.FakeHeaders
