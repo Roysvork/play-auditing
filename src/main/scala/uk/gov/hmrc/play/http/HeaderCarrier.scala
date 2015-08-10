@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.audit.http
+package uk.gov.hmrc.play.http
 
 import play.api.mvc.{Headers, Session}
 import uk.gov.hmrc.play.audit.EventKeys
 import uk.gov.hmrc.play.audit.http.connector.AuditProvider
 import uk.gov.hmrc.play.http.logging._
-import uk.gov.hmrc.play.http.{HeaderNames, SessionKeys}
 
 import scala.util.Try
 
