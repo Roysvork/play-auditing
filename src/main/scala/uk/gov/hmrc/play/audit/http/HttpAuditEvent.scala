@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.play.audit.http
 
-import uk.gov.hmrc.play.audit.http.connector.AuditProvider
+import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 trait HttpAuditEvent {
 
@@ -37,11 +38,13 @@ trait HttpAuditEvent {
     val Referer = "Referer"
   }
 
-  protected[http] def dataEvent(eventType: String, transactionName: String, request: RequestHeader)(implicit hc: AuditProvider = HeaderCarrier.fromHeaders(request.headers)) = {
+  protected[http] def dataEvent(eventType: String, transactionName: String, request: RequestHeader)
+                               (implicit hc: HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers)) = {
 
     import auditDetailKeys._
     import headers._
     import uk.gov.hmrc.play.audit.http.HeaderFieldsExtractor._
+    import AuditExtensions._
 
     val requiredFields = hc.toAuditDetails(Input -> s"Request to ${request.path}",
      Method -> request.method.toUpperCase,

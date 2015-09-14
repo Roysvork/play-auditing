@@ -16,23 +16,20 @@
 
 import sbt._
 import sbt.Keys._
-import uk.gov.hmrc.PublishingSettings._
-import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object HmrcBuild extends Build {
 
   import uk.gov.hmrc._
   import DefaultBuildSettings._
-  import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
-  import uk.gov.hmrc.PublishingSettings._
 
-  val appName = "http-verbs"
+  val appName = "play-auditing"
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
       targetJvm := "jvm-1.7",
+      version := "0.1.0",
       libraryDependencies ++= AppDependencies(),
       crossScalaVersions := Seq("2.11.6"),
       resolvers := Seq(
@@ -51,7 +48,8 @@ private object AppDependencies {
     "com.typesafe.play" %% "play" % PlayVersion.current,
     ws,
     "uk.gov.hmrc" %% "time" % "1.1.0",
-    "uk.gov.hmrc" %% "http-exceptions" % "0.3.0"
+    "uk.gov.hmrc" %% "http-exceptions" % "0.3.0",
+    "uk.gov.hmrc" %% "http-verbs" % "1.9.0-2-g06d7946"
   )
 
   trait TestDependencies {
@@ -67,7 +65,8 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.4" % scope,
         "org.scalacheck" %% "scalacheck" % "1.12.2" % scope,
         "org.pegdown" % "pegdown" % "1.4.2" % scope,
-        "com.github.tomakehurst" % "wiremock" % "1.52" % scope
+        "com.github.tomakehurst" % "wiremock" % "1.52" % scope,
+        "uk.gov.hmrc" %% "http-verbs" % "1.9.0-2-g06d7946"
       )
     }.test
   }

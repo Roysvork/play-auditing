@@ -17,15 +17,18 @@
 package uk.gov.hmrc.play.audit.http
 
 import org.joda.time.DateTime
+import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.EventTypes._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataCall, MergedDataEvent}
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.play.http.hooks.HttpHook
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.DateTimeUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 
 trait HttpAuditing extends DateTimeUtils {
 
@@ -33,13 +36,15 @@ trait HttpAuditing extends DateTimeUtils {
   def appName: String
   def auditDisabledForPattern = ("""http://.*\.service""").r
 
-  protected def auditRequestWithResponseF(url: String, verb: String, body: Option[_], responseToAuditF: Future[HttpResponse])(implicit hc: HeaderCarrier): Unit = {
-    val request = HttpRequest(url, verb, body, now)
-    responseToAuditF.map {
-      response =>
-        audit(request, response)
-    }.recover {
-      case e: Throwable => auditRequestWithException(request, e.getMessage)
+  object AuditingHook extends HttpHook {
+    override def executeHook(url: String, verb: String, body: Option[_], responseF: Future[HttpResponse])(implicit hc: HeaderCarrier): Unit = {
+      val request = HttpRequest(url, verb, body, now)
+      responseF.map {
+        response =>
+          audit(request, response)
+      }.recover {
+        case e: Throwable => auditRequestWithException(request, e.getMessage)
+      }
     }
   }
 
@@ -51,7 +56,6 @@ trait HttpAuditing extends DateTimeUtils {
   private[http] def auditRequestWithException(request: HttpRequest, errorMessage: String)(implicit hc: HeaderCarrier): Unit =
     if (isAuditable(request.url)) auditConnector.sendMergedEvent(dataEventFor(request, errorMessage))
 
-
   private def dataEventFor(request: HttpRequest, errorMesssage: String)(implicit hc: HeaderCarrier) = {
     val responseDetails = Map(FailedRequestMessage -> errorMesssage)
     buildDataEvent(request, responseDetails)
@@ -62,13 +66,15 @@ trait HttpAuditing extends DateTimeUtils {
     buildDataEvent(request, responseDetails)
   }
 
+  private def buildDataEvent(request: HttpRequest, responseDetails: Map[String, String])(implicit hc: HeaderCarrier) = {
+    import AuditExtensions._
 
-  private def buildDataEvent(request: HttpRequest, responseDetails: Map[String, String])(implicit hc: HeaderCarrier) =
     MergedDataEvent(
       auditSource = appName,
       auditType = OutboundCall,
       request = DataCall(hc.toAuditTags(request.url, request.url), hc.toAuditDetails(requestDetails(request): _*), request.generatedAt),
       response = DataCall(Map.empty, responseDetails, now))
+  }
 
   private def requestDetails(request: HttpRequest)(implicit hc: HeaderCarrier): Seq[(String, String)] =
     Seq(Path -> request.url, Method -> request.verb) ++ request.body.map(b => Seq(RequestBody -> b.toString)).getOrElse(Seq.empty) ++ HeaderFieldsExtractor.optionalAuditFields(hc.extraHeaders.toMap)

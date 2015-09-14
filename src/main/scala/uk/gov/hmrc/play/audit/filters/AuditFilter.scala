@@ -21,8 +21,9 @@ import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.EventTypes
 import uk.gov.hmrc.play.audit.EventTypes._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.http.{HeaderCarrier, HttpAuditEvent}
+import uk.gov.hmrc.play.audit.http.HttpAuditEvent
 import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 trait AuditFilter extends EssentialFilter with HttpAuditEvent {
 
@@ -40,7 +41,7 @@ trait AuditFilter extends EssentialFilter with HttpAuditEvent {
     }
   }
 
-  def buildAuditedHeaders(request: RequestHeader) = HeaderCarrier.fromHeaders(request.headers)
+  def buildAuditedHeaders(request: RequestHeader) = HeaderCarrier.fromHeadersAndSession(request.headers)
 
   def audit(request: RequestHeader, nextAction: EssentialAction) = {
     implicit val hc = buildAuditedHeaders(request)

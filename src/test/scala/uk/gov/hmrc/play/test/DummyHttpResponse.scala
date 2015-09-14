@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.http.logging.filters
+package uk.gov.hmrc.play.test
 
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.play.http.HttpResponse
 
-trait FrontendLoggingFilter extends LoggingFilter {
-
-  override def buildLoggedHeaders(request: RequestHeader) = HeaderCarrier.fromSessionAndHeaders(request.session, request.headers)
-
+class DummyHttpResponse(override val body: String, override val status: Int, override val allHeaders: Map[String, Seq[String]] = Map.empty) extends HttpResponse {
+  override def json: JsValue = Json.parse(body)
 }

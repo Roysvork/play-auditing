@@ -23,9 +23,9 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.play.audit.EventTypes
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.MockAuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, DeviceFingerprint}
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.Concurrent
 
 import scala.concurrent.ExecutionContext.Implicits.global

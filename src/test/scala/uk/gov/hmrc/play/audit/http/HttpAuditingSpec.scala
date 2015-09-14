@@ -27,15 +27,15 @@ import uk.gov.hmrc.play.audit.EventTypes._
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, MockAuditConnector}
 import uk.gov.hmrc.play.audit.model.MergedDataEvent
 import uk.gov.hmrc.play.http.HeaderNames._
-import uk.gov.hmrc.play.http.test.logging.LogCapturing
-import uk.gov.hmrc.play.http.{DummyHttpResponse, HttpResponse}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.Concurrent.await
 import uk.gov.hmrc.play.test.Concurrent.liftFuture
+import uk.gov.hmrc.play.test.DummyHttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class HttpAuditingSpec extends WordSpecLike with Matchers with Eventually with LogCapturing with BeforeAndAfterAll {
+class HttpAuditingSpec extends WordSpecLike with Matchers with Eventually with BeforeAndAfterAll {
 
   implicit def mockDatastreamConnector(ds: AuditConnector) : MockAuditConnector = ds.asInstanceOf[MockAuditConnector]
 
@@ -60,8 +60,8 @@ class HttpAuditingSpec extends WordSpecLike with Matchers with Eventually with L
 
     override lazy val auditConnector: AuditConnector = new MockAuditConnector
 
-    override def auditRequestWithResponseF(url: String, verb: String, requestBody: Option[_], response: Future[HttpResponse])(implicit hc: HeaderCarrier): Unit =
-      super.auditRequestWithResponseF(url, verb, requestBody, response)(hc)
+    def auditRequestWithResponseF(url: String, verb: String, requestBody: Option[_], response: Future[HttpResponse])(implicit hc: HeaderCarrier): Unit =
+      AuditingHook.executeHook(url, verb, requestBody, response)(hc)
 
     var now_call_count = 0
     override def now = {

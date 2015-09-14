@@ -14,11 +14,31 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play
+package uk.gov.hmrc.play.test
 
-import uk.gov.hmrc.play.http.logging.ConnectionTracing
+import play.api.mvc.{Headers, RequestHeader}
+import play.api.test.FakeHeaders
 
-package object http {
-  @deprecated("Re-named to ConnectionTracing", "23/04/2014")
-  type ConnectionLogging = ConnectionTracing
+
+class DummyRequestHeader extends RequestHeader {
+
+  override def remoteAddress: String = ???
+
+  override def headers: Headers = FakeHeaders(Seq.empty)
+
+  override def queryString: Map[String, Seq[String]] = ???
+
+  override def version: String = ???
+
+  override def method: String = "GET"
+
+  override def path: String = "/"
+
+  override def uri: String = "/"
+
+  override def tags: Map[String, String] = ???
+
+  override def id: Long = ???
+
+  override def secure: Boolean = false
 }

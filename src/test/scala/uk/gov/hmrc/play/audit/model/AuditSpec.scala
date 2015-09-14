@@ -18,10 +18,10 @@ package uk.gov.hmrc.play.audit.model
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.{Matchers, WordSpecLike}
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.config.{AuditingConfig, BaseUri, Consumer}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.Audit.OutputTransformer
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderNames._
 import uk.gov.hmrc.play.http.logging.RequestId
 

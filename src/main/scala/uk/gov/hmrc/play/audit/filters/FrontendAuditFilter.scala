@@ -19,8 +19,8 @@ package uk.gov.hmrc.play.audit.filters
 import play.api.http.HeaderNames
 import play.api.mvc.{RequestHeader, ResponseHeader}
 import uk.gov.hmrc.play.audit.EventTypes
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{DataEvent, DeviceFingerprint}
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 trait FrontendAuditFilter extends AuditFilter {
 
@@ -30,7 +30,7 @@ trait FrontendAuditFilter extends AuditFilter {
 
   def applicationPort: Option[Int]
 
-  override def buildAuditedHeaders(request: RequestHeader) = HeaderCarrier.fromSessionAndHeaders(request.session, request.headers)
+  override def buildAuditedHeaders(request: RequestHeader) = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
 
   override def buildAuditRequestEvent(eventType: EventTypes.EventType, request: RequestHeader, requestBody: String)(implicit hc: HeaderCarrier): DataEvent = {
 

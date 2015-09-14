@@ -21,10 +21,9 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, Tag, WordSpecLike}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import uk.gov.hmrc.play.audit.EventTypes
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.config.{Consumer, AuditingConfig, BaseUri}
 import uk.gov.hmrc.play.audit.model.{DataCall, DataEvent, ExtendedDataEvent, MergedDataEvent}
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.logging.LoggingDetails
 
 import scala.concurrent.{ExecutionContext, Future}

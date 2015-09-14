@@ -27,7 +27,6 @@ import uk.gov.hmrc.play.http.{JsValidationException, NotFoundException}
 import scala.concurrent.Future
 
 trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
-
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def auditConnector: AuditConnector

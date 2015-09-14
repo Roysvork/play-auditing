@@ -17,6 +17,7 @@
 package uk.gov.hmrc.play.audit.model
 
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.util.Try
@@ -83,7 +84,6 @@ trait AuditTags {
 }
 class Audit(applicationName: String, auditConnector: AuditConnector) extends AuditTags {
 
-  import uk.gov.hmrc.play.audit.http.HeaderCarrier
   import Audit._
   import scala.concurrent.ExecutionContext.Implicits.global
 
